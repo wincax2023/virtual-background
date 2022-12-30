@@ -66,8 +66,10 @@ class BackgroundEffectGL {
             () => {}
         )
         this.timerWorker = createTimerWorker();
-        this.timerWorker.onmessage = this.onmessage()
-        await this.render()
+        this.timerWorker.onmessage(() => {
+            this.render()
+        }) // this.onmessage()
+        this.render()
         const postProcessingConfig = {
             smoothSegmentationMask: true,
             jointBilateralFilter: { sigmaSpace: 1, sigmaColor: 0.1 },
@@ -84,15 +86,18 @@ class BackgroundEffectGL {
     }
 
     onmessage = async () => {
-        await this.render()
+        console.warn('onmessage', this.render);
+        this.render()
     }
 
     render = async () => {
         
         if (this.pipeline) {
             await this.pipeline.render()
+        } else {
+            console.warn('this.pipeline', this.pipeline);
         }
-        this.renderTimeoutId = this.timerWorker.setTimeout(
+        this.timerWorker.setTimeout(
           Math.max(0, 1000 / 30)
         );
     }
