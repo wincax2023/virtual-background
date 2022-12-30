@@ -1,0 +1,59 @@
+.background-box {
+    width: 545px;
+    height: 396px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    .image-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        width: 550px;
+        font-size: 12px;
+        font-weight: 400;
+        line-height: 17px;
+        color: #9E9E9E;
+    }
+
+    .image-box {
+        width: 160px;
+        height: 120px;
+        background: #F6F6F6;
+        margin: 0 23px 12px 0;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+    }
+    .select {
+        border: 2px solid #252B48;
+    }
+    .blur {
+        background: #F4FCFF;
+    }
+    .none-image {
+        width: 12px;
+        height: 12px;
+        object-fit: contain;
+    }
+    .blur-image {
+        width: 17px;
+        height: 17px;
+        object-fit: contain;
+    }
+    .image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .none-label {
+        color: #9E9E9E;
+        margin-left: 4px;
+
+    }
+    .blur-label {
+        color: #3F3739;
+        margin-left: 4px;
+    }
+}
