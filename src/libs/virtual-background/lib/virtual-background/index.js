@@ -52,8 +52,8 @@ export async function createVirtualBackgroundEffect(virtualBackground, watermark
 	}
 
 	const models = {
-		model96: location.origin + location.pathname + './static/background/js/libs/segm_lite_v681.tflite',
-		model144: location.origin + location.pathname + './static/background/js/libs/segm_full_v679.tflite'
+		model96: window.location.origin + window.location.pathname + './static/background/js/libs/segm_lite_v681.tflite',
+		model144: window.location.origin + window.location.pathname + './static/background/js/libs/segm_full_v679.tflite'
 	};
 
 	const modelBufferOffset = tflite._getModelBufferMemoryOffset();

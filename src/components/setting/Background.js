@@ -1,30 +1,42 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux'
-import { setBackground } from '../../store/feature/background';
+import { setBackground, setWatermark } from '../../store/feature/background';
 import ImageItem from './ImageItem';
 
-import {backgroundImageList} from './configure'
+import {backgroundImageList, watermarkImageList} from './configure'
 
 import './Background.scss';
 
 const Background = (props) => {
     const dispatch = useDispatch();
     const [bgImageList, setBackgroundImageList] = useState(backgroundImageList);
+    const [wmImageList, setWatermarkImageList] = useState(watermarkImageList);
 
-    const onSelect = (image) => {
-		let _imageList = JSON.parse(JSON.stringify(bgImageList));
+    const onSelect = (image, watermark) => {
+
+		let _imageList = watermark ? JSON.parse(JSON.stringify(wmImageList)) : JSON.parse(JSON.stringify(bgImageList));
 
 		_imageList.map((item, index) => {
 			item.isSelect = item.image === image;
             if (item.isSelect) {
                 let _image = JSON.parse(JSON.stringify(item));
 				_image.selectIndex = index;
-                dispatch(setBackground(_image));
+                if (watermark) {
+                    dispatch(setWatermark(_image));
+                } else {
+                    dispatch(setBackground(_image));
+                }
+                
             }
            
             return item
 		});
-		setBackgroundImageList(_imageList);
+        if (watermark) {
+            setWatermarkImageList(_imageList);
+        } else {
+            setBackgroundImageList(_imageList);
+        }
+
 	};
 
 	return (
@@ -32,6 +44,11 @@ const Background = (props) => {
             <div className="image-wrapper">
                 {bgImageList.map((item, index) => {
                     return <ImageItem key={index} image={item.image} type={item.type} isSelect={item.isSelect} watermark={false} onSelect={onSelect} />;
+                })}
+		    </div>
+            <div className="image-wrapper">
+                {wmImageList.map((item, index) => {
+                    return <ImageItem key={index} image={item.image} type={item.type} isSelect={item.isSelect} watermark={true} onSelect={onSelect} />;
                 })}
 		    </div>
 		</div>

@@ -16,6 +16,7 @@ function useTFLite(segmentationConfig) {
       createTFLiteModule().then(setTFLite)
       try {
         const createdTFLiteSIMD = await createTFLiteSIMDModule()
+        console.log('createdTFLiteSIMD ',createdTFLiteSIMD);
         setTFLiteSIMD(createdTFLiteSIMD)
         setSIMDSupported(true)
       } catch (error) {

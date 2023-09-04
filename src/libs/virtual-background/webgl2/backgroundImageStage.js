@@ -150,6 +150,8 @@ export function buildBackgroundImageStage(
       gl.LINEAR,
       gl.LINEAR
     )
+    // WebGL2
+    // texSubImage2D(target, level, xoffset, yoffset, width, height, format, type, source)
     gl.texSubImage2D(
       gl.TEXTURE_2D,
       0,

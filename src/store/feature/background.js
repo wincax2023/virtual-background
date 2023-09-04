@@ -13,16 +13,27 @@ export const backgroundSlice = createSlice({
         value: '',
         apiClear: 'BackgroundTexture.clear',
     }, // 虚拟背景
+    watermark: {
+      image: '',
+      position: 1,
+      value: '',
+      type: 'none', // none | image
+      selectIndex: 0,
+    }
   },
   reducers: {
     setBackground(state, action) {
         let background = action.payload;
         return { ...state, background };
     },
+    setWatermark(state, action) {
+      let watermark = action.payload;
+      return { ...state, watermark };
+  },
   },
 })
 
 // Action creators are generated for each case reducer function
-export const { setBackground } = backgroundSlice.actions
+export const { setBackground, setWatermark } = backgroundSlice.actions
 
 export default backgroundSlice.reducer

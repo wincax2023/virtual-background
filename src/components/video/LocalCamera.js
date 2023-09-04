@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import {  useSelector } from 'react-redux';
 import backgroundEffect from '../../libs/BackgroundEffect';
 import backgroundEffectGL from '../../libs/BackgroundEffectGL';
-import { buildWebGL2Pipeline } from '../../libs/virtual-background/webgl2/webgl2Pipeline'
 import useTFLite from '../../libs/virtual-background/core/hooks/useTFLite'
-import { createTimerWorker } from '../../libs/virtual-background/helpers/timerHelper'
 
 import './Video.scss';
 
 
 const ImageItem = (props) => {
     const { background } = useSelector((state) => state);
+    const [paused, setPause] = useState(true)
     // const [backgroundConfig, setBackgroundConfig] = useState()
 
     // useEffect(() => {
@@ -64,6 +63,11 @@ const ImageItem = (props) => {
         
         const startEffect4Safari = async () => {
 
+            if (paused) {
+                backgroundEffectGL.stopEffect(true)
+                return
+            }
+
             if (background.background.type === 'none') {
                 backgroundEffectGL.stopEffect(true)
 
@@ -72,58 +76,67 @@ const ImageItem = (props) => {
                     const video = document.getElementById(videoId);
                     video.srcObject = stream.mediaStream;
                 }
+                const canvas = document.getElementById('canvas');
+                backgroundEffectGL.createEffectStream(sourcePlayback, null, canvas, tflite, background.background, background.watermark, null)
             } else {
                 const backgroundImage = document.getElementById('background');
                 const canvas = document.getElementById('canvas');
+                // watermark
+                const watermarkImage = document.getElementById('watermark');
+                console.log('watermarkImage', watermarkImage);
                 
-                // createEffectStream(sourcePlayback, backgroundImage, canvas, tflite, background, watermark, noAudio = false)
-                backgroundEffectGL.createEffectStream(sourcePlayback, backgroundImage, canvas, tflite, background.background, {})
+                // sourcePlayback, backgroundImage, canvas, tflite, background, watermark, watermarkImage
+                backgroundEffectGL.createEffectStream(sourcePlayback, backgroundImage, canvas, tflite, background.background, background.watermark, watermarkImage)
 
             }
             
         }
 
-        const startEffect = async () => {
-            let stream = null;
-            if (background.background.type === 'none') {
-                stream = await backgroundEffect.createmediaStream('label');
-            } else {
-                stream = await backgroundEffect.createEffectStream('label', videoId, background.background, {});
-            }
-            if (stream) {
-                const video = document.getElementById(videoId);
-                video.srcObject = stream.mediaStream;
-            }
-        }
-        
         if (isSafari) {
             startEffect4Safari();
         } else {
-            startEffect();
+            // startEffect();
+            startEffect4Safari();
         }
         
-	}, [background]);
+	}, [background, paused]);
 
-
+    const onStart = () => {
+        setPause(false)
+    }
+    const onStop = () => {
+        setPause(true)
+    }
 	return (
-		<div className="video-wrapper" >
-            <video className="video" id={videoId} autoPlay controls={false} ></video>
-            {segmentationConfig ? <canvas
-                // The key attribute is required to create a new canvas when switching
-                // context mode
-                className="canvas"
-                key={segmentationConfig.pipeline}
-                id='canvas'
-                width={sourcePlayback.width}
-                height={sourcePlayback.height}
-            /> : null}
-            <img
-                id='background'
-                className="background"
-                src={background.background.image}
-                alt=""
-                hidden={true}
-            />
+		<div className="video-container" >
+            <button onClick={onStart}>Start</button>
+            <button onClick={onStop}>Stop</button>
+            <div className="video-wrapper" >
+                <video className="video" id={videoId} autoPlay controls={false} ></video>
+                {segmentationConfig ? <canvas
+                    // The key attribute is required to create a new canvas when switching
+                    // context mode
+                    className="canvas"
+                    key={segmentationConfig.pipeline}
+                    id='canvas'
+                    width={sourcePlayback.width}
+                    height={sourcePlayback.height}
+                /> : null}
+                <img
+                    id='background'
+                    className="background"
+                    src={background.background.image}
+                    alt=""
+                    hidden={true}
+                />
+                <img
+                    id='watermark'
+                    className="background"
+                    src={background.watermark.image}
+                    alt=""
+                    hidden={true}
+                />
+            </div>
 		</div>
 	);
 };
