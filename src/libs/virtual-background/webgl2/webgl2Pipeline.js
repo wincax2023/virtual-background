@@ -35,7 +35,9 @@ export function buildWebGL2Pipeline(
   const [segmentationWidth, segmentationHeight] =
     inputResolutions[segmentationConfig.inputResolution];
 
-  const gl = canvas.getContext("webgl2");
+  const gl = canvas.getContext("webgl2", {
+    premultipliedAlpha: false  // Ask for non-premultiplied alpha
+  });
 
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
 

@@ -76,18 +76,25 @@ export function buildWatermarkImageStage(
   }
 
   gl.useProgram(program);
+  // gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+  // gl.enable(gl.BLEND);
 
   async function render() {
     gl.viewport(0, canvas.height - outputHeight, outputWidth, outputHeight);
-    // gl.enable(gl.BLEND);
+    gl.enable(gl.BLEND);
     // gl.blendEquation(gl.FUNC_ADD);
-    // gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    // gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+
     gl.useProgram(program);
     gl.activeTexture(gl.TEXTURE3);
     gl.bindTexture(gl.TEXTURE_2D, watermarkTexture);
     gl.uniform1i(watermarkLocation, 3);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    gl.blendFunc(gl.ONE, gl.ZERO);
   }
 
   function updateWatermarkImage(watermarkImage) {
