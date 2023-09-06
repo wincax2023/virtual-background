@@ -1,22 +1,35 @@
 .video-wrapper {
-    display: flex;
-    .video {
-        width: 480px;
-        height: 320px;
-        background: #f4fcff;
-        object-fit: fill;
-    }
-    .canvas {
-        width: 480px;
-        height: 320px;
-        background: #f6f6f6;
-        object-fit: fill;
-    }
-    .background {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        object-fit: cover;
-        display: none;
-    }
+  display: flex;
+  .video {
+    width: 480px;
+    height: 320px;
+    background: #f4fcff;
+    object-fit: fill;
+  }
+  .canvas {
+    width: 480px;
+    height: 320px;
+    background: #f6f6f6;
+    object-fit: fill;
+  }
+  .background {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: cover;
+    display: none;
+  }
+  .watermark {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    object-fit: contain;
+    bottom: 0;
+    right: 0;
+    display: block;
+    object-fit: contain;
+    width: 282px;
+    height: 74px;
+    display: block;
+  }
 }

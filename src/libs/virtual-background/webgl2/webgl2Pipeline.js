@@ -15,9 +15,8 @@ export function buildWebGL2Pipeline(
   canvas,
   tflite,
   watermarkImage,
-  addFrameEvent
+  watermarkConfig
 ) {
-  console.warn("buildWebGL2Pipeline : ", segmentationConfig);
   const vertexShaderSource = glsl`#version 300 es
 
     in vec2 a_position;
@@ -33,7 +32,6 @@ export function buildWebGL2Pipeline(
 
   const { width: frameWidth, height: frameHeight } = sourcePlayback;
 
-  // console.warn("sourcePlayback : ", sourcePlayback);
   const [segmentationWidth, segmentationHeight] =
     inputResolutions[segmentationConfig.inputResolution];
 
@@ -130,7 +128,6 @@ export function buildWebGL2Pipeline(
           backgroundImage,
           canvas
         );
-
   const watermarkStage = buildWatermarkImageStage(
     gl,
     positionBuffer,
@@ -161,36 +158,21 @@ export function buildWebGL2Pipeline(
 
     await resizingStage.render();
 
-    addFrameEvent();
-
     tflite._runInference();
-
-    addFrameEvent();
-
     loadSegmentationStage.render();
     jointBilateralFilterStage.render();
     backgroundStage.render();
 
-    if (watermarkImage) {
-      watermarkStage.render();
-      // gl.texImage2D(
-      //   gl.TEXTURE_2D,
-      //   0,
-      //   gl.RGBA,
-      //   frameWidth,
-      //   frameHeight,
-      //   0,
-      //   gl.RGBA,
-      //   gl.UNSIGNED_BYTE,
-      //   watermarkImage
-      // );
-    }
+    // if (backgroundConfig.type !== "none") {
 
-    // console.warn("render");
+    // }
+
+    if (watermarkConfig.type === "image") {
+      watermarkStage.render();
+    }
   }
 
   function updatePostProcessingConfig(postProcessingConfig) {
-    console.warn("updatePostProcessingConfig", postProcessingConfig);
     jointBilateralFilterStage.updateSigmaSpace(
       postProcessingConfig.jointBilateralFilter.sigmaSpace
     );
@@ -209,7 +191,6 @@ export function buildWebGL2Pipeline(
       const backgroundBlurStage = backgroundStage;
       backgroundBlurStage.updateCoverage(postProcessingConfig.coverage);
     } else {
-      console.warn("backgroundConfig.type : ", backgroundConfig.type);
       // TODO Handle no background in a separate pipeline path
       const backgroundImageStage = backgroundStage;
       backgroundImageStage.updateCoverage([0, 0.9999]);

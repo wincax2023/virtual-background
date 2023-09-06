@@ -8,14 +8,14 @@ import './Video.scss';
 
 
 const ImageItem = (props) => {
-    const { background } = useSelector((state) => state);
+    const { background, watermark } = useSelector((state) => state.background);
     const [paused, setPause] = useState(true)
     // const [backgroundConfig, setBackgroundConfig] = useState()
 
     // useEffect(() => {
     //     setBackgroundConfig({
-    //         type: background.background.type,
-    //         url: background.background.image,
+    //         type: background.type,
+    //         url: background.image,
     //     })
     // }, [background]);
 
@@ -68,7 +68,7 @@ const ImageItem = (props) => {
                 return
             }
 
-            if (background.background.type === 'none') {
+            if (background.type === 'none' && watermark.type === 'none') {
                 backgroundEffectGL.stopEffect(true)
 
                 const stream = await backgroundEffect.startCamera('label');
@@ -77,7 +77,7 @@ const ImageItem = (props) => {
                     video.srcObject = stream.mediaStream;
                 }
                 const canvas = document.getElementById('canvas');
-                backgroundEffectGL.createEffectStream(sourcePlayback, null, canvas, tflite, background.background, background.watermark, null)
+                backgroundEffectGL.createEffectStream(sourcePlayback, null, canvas, tflite, background, watermark, null)
             } else {
                 const backgroundImage = document.getElementById('background');
                 const canvas = document.getElementById('canvas');
@@ -86,7 +86,7 @@ const ImageItem = (props) => {
                 console.log('watermarkImage', watermarkImage);
                 
                 // sourcePlayback, backgroundImage, canvas, tflite, background, watermark, watermarkImage
-                backgroundEffectGL.createEffectStream(sourcePlayback, backgroundImage, canvas, tflite, background.background, background.watermark, watermarkImage)
+                backgroundEffectGL.createEffectStream(sourcePlayback, backgroundImage, canvas, tflite, background, watermark, watermarkImage)
 
             }
             
@@ -99,7 +99,7 @@ const ImageItem = (props) => {
             startEffect4Safari();
         }
         
-	}, [background, paused]);
+	}, [background, watermark, paused]);
 
     const onStart = () => {
         setPause(false)
@@ -125,14 +125,14 @@ const ImageItem = (props) => {
                 <img
                     id='background'
                     className="background"
-                    src={background.background.image}
+                    src={background.image}
                     alt=""
                     hidden={true}
                 />
                 <img
                     id='watermark'
-                    className="background"
-                    src={background.watermark.image}
+                    className="watermark"
+                    src={watermark.image}
                     alt=""
                     hidden={true}
                 />

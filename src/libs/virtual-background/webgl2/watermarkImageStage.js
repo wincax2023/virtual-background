@@ -41,12 +41,12 @@ export function buildWatermarkImageStage(
   out vec4 outColor;
  
   void main(){
-    //outColor = texture(u_image,v_texCoord);
     outColor = texture(u_image,v_texCoord).rgba;
   }
   `;
 
-  const { width: outputWidth, height: outputHeight } = canvas;
+  const outputWidth = 282;
+  const outputHeight = 74;
 
   const vertexShader = compileShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
   const fragmentShader = compileShader(
@@ -61,9 +61,9 @@ export function buildWatermarkImageStage(
     positionBuffer,
     texCoordBuffer
   );
- 
+
   // lookup uniforms
-  const watermarkLocation = gl.getUniformLocation(program, 'u_image')
+  const watermarkLocation = gl.getUniformLocation(program, "u_image");
 
   let watermarkTexture = null;
   // TODO Find a better to handle background being loaded
@@ -78,16 +78,16 @@ export function buildWatermarkImageStage(
   gl.useProgram(program);
 
   async function render() {
-    if (!watermarkTexture) return;
-
-    gl.viewport(0, 0, outputWidth, outputHeight);
+    gl.viewport(0, canvas.height - outputHeight, outputWidth, outputHeight);
+    // gl.enable(gl.BLEND);
+    // gl.blendEquation(gl.FUNC_ADD);
+    // gl.blendFunc(gl.ONE_MINUS_CONSTANT_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(program);
-    gl.activeTexture(gl.TEXTURE1);
+    gl.activeTexture(gl.TEXTURE3);
     gl.bindTexture(gl.TEXTURE_2D, watermarkTexture);
-    gl.uniform1i(watermarkLocation, 2)
+    gl.uniform1i(watermarkLocation, 3);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-    console.log('render');
   }
 
   function updateWatermarkImage(watermarkImage) {
@@ -112,13 +112,6 @@ export function buildWatermarkImageStage(
       gl.UNSIGNED_BYTE,
       watermarkImage
     );
-
-    // let logoScale = [1.0, 1.0];
-    // let logoPosition = [0.0, 0.0];
-
-    // // 更新uniform变量的值
-    // gl.uniform2fv(translationLocation, logoPosition);
-    // gl.uniform2fv(scaleLocation, logoScale);
   }
 
   function cleanUp() {

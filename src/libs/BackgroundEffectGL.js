@@ -36,6 +36,10 @@ class BackgroundEffectGL {
             type: background.type,
             url: background.image,
         }
+        const watermarkConfig = {
+            type: watermark.type,
+            url: watermark.image,
+        }
         const segmentationConfig = {
             model: 'meet',
             backend: 'wasm',
@@ -52,7 +56,7 @@ class BackgroundEffectGL {
             canvas,
             tflite,
             watermarkImage,
-            () => {}
+            watermarkConfig,
         )
         this.timerWorker = createTimerWorker();
         this.timerWorker.onmessage(() => {
